@@ -63,7 +63,6 @@ int main ( int argc, char *argv[] )
 	struct fb_bitfield green;
 	struct fb_bitfield blue;
  
-	//打开显示设备
 	fbfd = open("/dev/fb0", O_RDWR);
 	if (!fbfd)
 	{
@@ -171,12 +170,10 @@ int show_bmp()
 			break;
 		location = line_x * bits_per_pixel / 8 + (InfoHead.ciHeight - line_y - 1) * xres * bits_per_pixel / 8;
  
-		//显示每一个像素
 		*(fbp + location + 0)=pix.blue;
 		*(fbp + location + 1)=pix.green;
 		*(fbp + location + 2)=pix.red;
 		*(fbp + location + 3)=pix.reserved;
-    printf("%d\t%d\t%d\t\n",pix.blue, pix.green, pix.blue);
  
 		line_x++;
 		if (line_x == InfoHead.ciWidth )
@@ -188,6 +185,6 @@ int show_bmp()
 		}
 	}
 	fclose( fp );
-  printf("\n");
+  printf("")
 	return( 0 );
 }
