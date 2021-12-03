@@ -8,5 +8,4 @@
 #include <signal.h>
 #include <pthread.h>
 
-
 void* display(void*);
