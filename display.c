@@ -4,6 +4,8 @@ void* display(void* data){
 	int exit_status;
     pid_t PID = fork();
     char pidstr[1024];
+	char *str = (char*) data; // 取得輸入資料
+	char command[1024];
     
     switch(PID){
         case -1:
@@ -11,12 +13,14 @@ void* display(void* data){
             exit(-1);
         case 0:
             system("killall gst-launch-1.0");
-            system("gst-launch-1.0 -q filesrc location=01.png ! pngdec ! imagefreeze ! videoconvert ! autovideosink");
+			sprintf(command, "gst-launch-1.0 -q filesrc location=%s.png ! pngdec ! imagefreeze ! videoconvert ! autovideosink", str);
+			printf("%s\n", command);
+            system(command);
             break;
         default:
             sleep(1);
-            printf("%d\n",PID);
             sprintf(pidstr, "kill %d", PID);
+			printf("%s\n",pidstr);
             system(pidstr);
             wait(&exit_status);
             // WEXITSTATUS is an macro
