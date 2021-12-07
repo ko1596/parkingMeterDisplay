@@ -26,6 +26,7 @@
 #include <pthread.h>
 
 #define WORK_SPACE_DIR "python3 /home/root/UI_ENG_for_python/frame.py "
+#define COMMAND_PATH "/home/root/UI_ENG_for_python/"
 
 /** @defgroup PrintScreen_PageStatus_group Defines Page Status
  *  Defines all possible Pages
@@ -97,6 +98,7 @@ void displayMenu(void);
 /**
  * @brief Use commands to switch page status 
  * 
+ * @param command           the switch command
  */
 void processCommand(int);
 

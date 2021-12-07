@@ -9,9 +9,10 @@ void initData(){
 }
 
 void display(){
-	int exit_status;
     pid_t PID = fork();
-    char pidstr[1024];
+    char pidstr[128];
+    char command[128];
+    int status;
     
     switch(PID){
         case -1:
@@ -19,16 +20,24 @@ void display(){
             exit(-1);
         case 0:
             system("killall gst-launch-1.0");
-            system("gst-launch-1.0 -q filesrc location=frame.png ! pngdec ! imagefreeze ! videoconvert ! autovideosink");
+            sprintf(command, "gst-launch-1.0 -q filesrc location=%sframe.png ! pngdec ! imagefreeze ! videoconvert ! autovideosink", COMMAND_PATH);
+            system(command);
+            exit(1);
             break;
         default:
             sleep(1);
             sprintf(pidstr, "kill %d", PID);
 			printf("%s\n",pidstr);
             system(pidstr);
-            wait(&exit_status);
-            // WEXITSTATUS is an macro
-            printf("[Parent] Child's exit status is [%d]\n", WEXITSTATUS(exit_status));
+            waitpid(PID, &status, 0);
+            printf("[Parent] Child's exit status is [%d]\n", WEXITSTATUS(status));
+            if(WIFEXITED(status) > 0){
+                printf("WIFEXITED(status): %d\n", WIFEXITED(status));
+                printf("WEXITSTATUS(status): %d\n", WEXITSTATUS(status));
+            }
+            else{
+                printf("WIFEXITED(status): %d\n", WIFEXITED(status));
+            }
     }
 }
 

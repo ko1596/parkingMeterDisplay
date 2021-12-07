@@ -5,9 +5,12 @@ void main()
     int input;
     initData();
     while (1){
+        
+        sleep(5);
         displayMenu();
-        printf("請輸入數字：");
-        scanf("%d", &input);
-        processCommand(input);
+        processCommand(3);
+        sleep(5);
+        displayMenu();
+        processCommand(4);
     }
 }
