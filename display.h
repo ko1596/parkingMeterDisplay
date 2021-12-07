@@ -87,7 +87,7 @@ void initData(void);
  * @brief Create a fork to display the page of the status
  * 
  */
-void display(void);
+void *display(void *);
 
 /**
  * @brief Generate the page of the status "frame.png"

@@ -8,43 +8,22 @@ void initData(){
     LR_Payment = 0;     // 0 left      1 right
 }
 
-void display(){
-    pid_t PID = fork();
-    char pidstr[128];
+void *display(void *parm){
     char command[128];
-    int status;
+
+    system("killall gst-launch-1.0");
+    sprintf(command, "gst-launch-1.0 -q filesrc location=%sframe.png ! pngdec ! imagefreeze ! videoconvert ! autovideosink", COMMAND_PATH);
+    system(command);
     
-    switch(PID){
-        case -1:
-            perror("fork()");
-            exit(-1);
-        case 0:
-            system("killall gst-launch-1.0");
-            sprintf(command, "gst-launch-1.0 -q filesrc location=%sframe.png ! pngdec ! imagefreeze ! videoconvert ! autovideosink", COMMAND_PATH);
-            system(command);
-            exit(1);
-            break;
-        default:
-            sleep(1);
-            sprintf(pidstr, "kill %d", PID);
-			printf("%s\n",pidstr);
-            system(pidstr);
-            waitpid(PID, &status, 0);
-            printf("[Parent] Child's exit status is [%d]\n", WEXITSTATUS(status));
-            if(WIFEXITED(status) > 0){
-                printf("WIFEXITED(status): %d\n", WIFEXITED(status));
-                printf("WEXITSTATUS(status): %d\n", WEXITSTATUS(status));
-            }
-            else{
-                printf("WIFEXITED(status): %d\n", WIFEXITED(status));
-            }
-    }
+    pthread_exit(NULL); // 離開子執行緒
 }
 
 void displayMenu() {
     
     char buf[1024];
     char temp[1024];
+    pthread_t t; // 宣告 pthread 變數
+  
     memset(buf, 0, 1024);
 
     strcat(buf, WORK_SPACE_DIR);
@@ -80,7 +59,10 @@ void displayMenu() {
     printf("%s\n", buf);
     system(buf);
 
-    display();
+    pthread_create(&t, NULL, display, NULL); // 建立子執行緒
+    sleep(2);
+    pthread_cancel(t); 
+    pthread_join(t, NULL);
 }
 
 void processCommand(int command) {
