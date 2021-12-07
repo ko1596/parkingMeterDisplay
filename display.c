@@ -1,7 +1,7 @@
 #include "display.h"
 
 void initData(){
-    status = 0;
+    PageStatus = PRINTSCREEN_PAGE_HOMEPAGE;
     hours = 0;
     LR_Block = 0;       // 0 left      1 right
     LR_Select_Time = 2; // 0 left      1 right      2 non-select
@@ -40,15 +40,15 @@ void displayMenu() {
 
     strcat(buf, WORK_SPACE_DIR);
     
-    switch (status){
-        case 0:
+    switch (PageStatus){
+        case PRINTSCREEN_PAGE_HOMEPAGE:
             strcat(buf, "1");
             break;
-        case 1:
+        case PRINTSCREEN_PAGE_PARK_SPACE_SELECTION:
             LR_Block ? strcat(buf, "3") : strcat(buf, "2");
             printf("Park Space: %d\n",LR_Block);
             break;
-        case 2:
+        case PRINTSCREEN_PAGE_TIME_SELECTION:
             if(LR_Select_Time == 0){
                 sprintf(temp, "5 %d %d", hours, LR_Select_Time);
             }else if(LR_Select_Time == 1){
@@ -58,11 +58,11 @@ void displayMenu() {
             }
             strcat(buf, temp);
             break;
-        case 3:
+        case PRINTSCREEN_PAGE_PAYMENT_SELECTION:
             LR_Payment ? strcat(buf, "7") : strcat(buf, "6");
             printf("Payment: %d\n",LR_Payment);
             break;
-        case 4:
+        case PRINTSCREEN_PAGE_DISPLAY_PAYMENT:
             LR_Payment ? strcat(buf, "9") : strcat(buf, "8");
             break;
         default:
@@ -75,16 +75,16 @@ void displayMenu() {
 }
 
 void processCommand(int command) {
-    switch (status)
+    switch (PageStatus)
     {
         case 0:
-            if(command == 3 || command ==4) status =  1;
+            if(command == 3 || command ==4) PageStatus =  1;
             break;
         case 1:
             if(command == 3) LR_Block = 0;
             else if(command == 4) LR_Block =1;
-            else if(command == 1) status = 2;
-            else if(command == 2) status = 0;
+            else if(command == 1) PageStatus = 2;
+            else if(command == 2) PageStatus = 0;
             break;
         case 2:
             if (command == 3)
@@ -98,18 +98,18 @@ void processCommand(int command) {
                 LR_Select_Time = 1;
             }
             else if (command == 1)
-                status = 3;
+                PageStatus = 3;
             else if (command == 2)
-                status = 1;
+                PageStatus = 1;
             break;
         case 3:
-            if (command == 3)   LR_Payment = 0;
-            else if (command == 4)   LR_Payment = 1;
-            else if (command == 1) status = 4;
-            else if (command == 2) status = 2;
+            if (command == 3)       LR_Payment = 0;
+            else if (command == 4)  LR_Payment = 1;
+            else if (command == 1)  PageStatus = 4;
+            else if (command == 2)  PageStatus = 2;
             break;
         case 4:
-            if(command == 1 || command == 2)    status = 0;
+            if(command == 1 || command == 2)    PageStatus = 0;
             break;
         default:
             break;
