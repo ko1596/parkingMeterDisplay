@@ -35,32 +35,41 @@ void display(){
 void displayMenu() {
     
     char buf[1024];
+    char temp[1024];
+    memset(buf, 0, 1024);
+
+    strcat(buf, WORK_SPACE_DIR);
+    
     switch (status){
         case 0:
-            system("python3 frame.py 1");
+            strcat(buf, "1");
             break;
         case 1:
-            LR_Block ? system("python3 frame.py 2") : system("python3 frame.py 3");
+            LR_Block ? strcat(buf, "3") : strcat(buf, "2");
+            printf("Park Space: %d\n",LR_Block);
             break;
         case 2:
             if(LR_Select_Time == 0){
-                sprintf(buf, "python3 frame.py 5 %d %d", hours, LR_Select_Time);
+                sprintf(temp, "5 %d %d", hours, LR_Select_Time);
             }else if(LR_Select_Time == 1){
-                sprintf(buf, "python3 frame.py 5 %d %d", hours, LR_Select_Time);
+                sprintf(temp, "5 %d %d", hours, LR_Select_Time);
             }else{
-                sprintf(buf, "python3 frame.py 5 %d", hours);
+                sprintf(temp, "5 %d", hours);
             }
-            system(buf);
+            strcat(buf, temp);
             break;
         case 3:
-            LR_Payment ? system("python3 frame.py 6") : system("python3 frame.py 7");
+            LR_Payment ? strcat(buf, "7") : strcat(buf, "6");
+            printf("Payment: %d\n",LR_Payment);
             break;
         case 4:
-            LR_Payment ? system("python3 frame.py 8") : system("python3 frame.py 9");
+            LR_Payment ? strcat(buf, "9") : strcat(buf, "8");
             break;
         default:
             break;
     }
+    printf("%s\n", buf);
+    system(buf);
 
     display();
 }

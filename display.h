@@ -8,6 +8,8 @@
 #include <signal.h>
 #include <pthread.h>
 
+#define WORK_SPACE_DIR "python3 /home/root/UI_ENG_for_python/frame.py "
+
 int status;
 int hours;
 int LR_Block;       // 0 left      1 right
