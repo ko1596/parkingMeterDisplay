@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../UI_ENG_for_python"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"display.h": "c",
+			"stdio.h": "c",
+			"waitflags.h": "c"
+		}
+	}
+}

@@ -1,5 +1,5 @@
 gst-launch-1.0 videotestsrc ! video/x-raw, width=1920, height=1080 ! autovideosink
-gst-launch-1.0 videotestsrc pattern=10 ! video/x-raw, width=768, height=990 ! autovideosink         //顯示雪花螢幕
+gst-launch-1.0 videotestsrc pattern=18 ! video/x-raw, width=1200, height=1600, framerate=60/1 ! autovideosink //顯示測試螢幕
 
 
 @parm   1 確認

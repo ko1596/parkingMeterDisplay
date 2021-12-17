@@ -78,6 +78,14 @@ int LR_Select_Time;
 int LR_Payment;
 
 /**
+ * @brief display thread
+ * 
+ */
+pthread_t displayThread; // 宣告 pthread 變數
+
+int displayed;
+
+/**
  * @brief Initial all data
  * 
  */
@@ -101,6 +109,8 @@ void displayMenu(void);
  * @param command           the switch command
  */
 void processCommand(int);
+
+void 
 
 #endif /*DISPLAY_H*/
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/

@@ -6,6 +6,7 @@ void initData(){
     LR_Block = 0;       // 0 left      1 right
     LR_Select_Time = 2; // 0 left      1 right      2 non-select
     LR_Payment = 0;     // 0 left      1 right
+    displayed = 0;      // 0 close 1 open
 }
 
 void *display(void *parm){
@@ -19,10 +20,9 @@ void *display(void *parm){
 }
 
 void displayMenu() {
-    
+
     char buf[1024];
     char temp[1024];
-    pthread_t t; // 宣告 pthread 變數
   
     memset(buf, 0, 1024);
 
@@ -58,11 +58,13 @@ void displayMenu() {
     }
     printf("%s\n", buf);
     system(buf);
-
-    pthread_create(&t, NULL, display, NULL); // 建立子執行緒
-    sleep(2);
-    pthread_cancel(t); 
-    pthread_join(t, NULL);
+    if(displayed){
+        pthread_cancel(displayThread); 
+        pthread_join(displayThread, NULL);
+        displayed = 1;
+    }
+    
+    pthread_create(&displayThread, NULL, display, NULL); // 建立子執行緒
 }
 
 void processCommand(int command) {

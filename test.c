@@ -7,10 +7,12 @@ void main()
     while (1){
         
         sleep(5);
-        displayMenu();
         processCommand(3);
-        sleep(5);
         displayMenu();
+        
+        sleep(5);
         processCommand(4);
+        displayMenu();
+        
     }
 }
