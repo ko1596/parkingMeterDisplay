@@ -30,6 +30,7 @@
 #define COMMAND_PATH "/home/root/UI_ENG_for_python/"
 #define LEFT_SPACE_NO " 001"
 #define RIGHT_SPACE_NO " 002"
+#define BUTTON_HOVER_TIME 500000
 
 /** @defgroup PrintScreen_PageStatus_group Defines Page Status
  *  Defines all possible Pages

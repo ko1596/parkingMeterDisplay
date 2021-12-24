@@ -156,7 +156,7 @@ void processCommand(int command)
         {
             LR_Block = 0;
             displayMenu();
-            sleep(1);
+            usleep(BUTTON_HOVER_TIME);
             backToHome();
             PageStatus = 2;
         }
@@ -164,7 +164,7 @@ void processCommand(int command)
         {
             LR_Block = 1;
             displayMenu();
-            sleep(1);
+            usleep(BUTTON_HOVER_TIME);
             backToHome();
             PageStatus = 2;
         }
@@ -194,7 +194,7 @@ void processCommand(int command)
         {
             LR_Payment = 0;
             displayMenu();
-            sleep(1);
+            usleep(BUTTON_HOVER_TIME);
             PageStatus = 4;
             displayMenu();
             sleep(5);
@@ -208,7 +208,7 @@ void processCommand(int command)
         {
             LR_Payment = 1;
             displayMenu();
-            sleep(1);
+            usleep(BUTTON_HOVER_TIME);
             PageStatus = 4;
             displayMenu();
             sleep(5);
