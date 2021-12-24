@@ -84,6 +84,8 @@ void displayMenu() {
         case PRINTSCREEN_PAGE_DISPLAY_SUCCESSFUL:
             strcat(buf, "11");
             break;
+        case 6:
+            strcat(buf, "999");
         default:
             break;
     }
@@ -98,7 +100,14 @@ void displayMenu() {
     pthread_create(&displayThread, NULL, displayScreen, NULL); // 建立子執行緒
 }
 
-void processCommand(int command) {
+int processCommand(int command) {
+
+    if(command == 5){
+        PageStatus = 6;
+        printf("display\n");
+        displayMenu();
+        return 0;
+    }
     switch (PageStatus)
     {
         case 0:
@@ -172,4 +181,5 @@ void processCommand(int command) {
             break;
     }
     displayMenu();
+    return 0;
 }

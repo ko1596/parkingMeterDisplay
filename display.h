@@ -117,7 +117,7 @@ void displayMenu(void);
  * 
  * @param command           the switch command
  */
-void processCommand(int);
+int processCommand(int);
 
 #endif /*DISPLAY_H*/
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/
