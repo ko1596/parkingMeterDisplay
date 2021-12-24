@@ -1,15 +1,27 @@
 #include "display.h"
 
-void initData(){
+void initData(void){
     PageStatus = PRINTSCREEN_PAGE_HOMEPAGE;
-    hours = 0;
-    LR_Block = 0;       // 0 left      1 right
+    hours = 1;
+    LR_Block = 2;       // 0 left      1 right      2 non-select
     LR_Select_Time = 2; // 0 left      1 right      2 non-select
-    LR_Payment = 0;     // 0 left      1 right
+    LR_Payment = 2;     // 0 left      1 right      2 non-select
     displayed = 0;      // 0 close 1 open
+    sprintf(parking_space_left, "%s", LEFT_SPACE_NO);
+    sprintf(parking_space_right, "%s", RIGHT_SPACE_NO);
 }
 
-void *display(void *parm){
+void backToHome(){
+    hours = 1;
+    printf("A LR_Block: %d\n", LR_Block);
+    if(PageStatus != 1)
+        LR_Block = 2;       // 0 left      1 right      2 non-select
+    LR_Select_Time = 2; // 0 left      1 right      2 non-select
+    LR_Payment = 2;     // 0 left      1 right      2 non-select
+}
+
+void *displayScreen(void *parm){
+    void* null = (void *)parm;
     char command[128];
 
     system("killall gst-launch-1.0");
@@ -33,7 +45,15 @@ void displayMenu() {
             strcat(buf, "1");
             break;
         case PRINTSCREEN_PAGE_PARK_SPACE_SELECTION:
-            LR_Block ? strcat(buf, "3") : strcat(buf, "2");
+            if(LR_Block == 0){
+                strcat(buf, "3");
+            }else if(LR_Block == 1){
+                strcat(buf, "4");
+            }else if (LR_Block == 2){
+                strcat(buf, "2");
+            }
+            strcat(buf, parking_space_left);
+            strcat(buf, parking_space_right);
             printf("Park Space: %d\n",LR_Block);
             break;
         case PRINTSCREEN_PAGE_TIME_SELECTION:
@@ -42,16 +62,27 @@ void displayMenu() {
             }else if(LR_Select_Time == 1){
                 sprintf(temp, "5 %d %d", hours, LR_Select_Time);
             }else{
-                sprintf(temp, "5 %d", hours);
+                sprintf(temp, "5 %d 2", hours);
             }
             strcat(buf, temp);
+            LR_Block ? strcat(buf, parking_space_right) : strcat(buf, parking_space_left);
+            printf("B LR_Block: %d\n", LR_Block);
             break;
         case PRINTSCREEN_PAGE_PAYMENT_SELECTION:
-            LR_Payment ? strcat(buf, "7") : strcat(buf, "6");
+            if(LR_Payment == 0) {
+                strcat(buf, "7");
+            } else if (LR_Payment == 1) {
+                strcat(buf, "8");
+            } else if (LR_Payment == 2) {
+                strcat(buf, "6");
+            }
             printf("Payment: %d\n",LR_Payment);
             break;
         case PRINTSCREEN_PAGE_DISPLAY_PAYMENT:
-            LR_Payment ? strcat(buf, "9") : strcat(buf, "8");
+            LR_Payment ? strcat(buf, "10") : strcat(buf, "9");
+            break;
+        case PRINTSCREEN_PAGE_DISPLAY_SUCCESSFUL:
+            strcat(buf, "11");
             break;
         default:
             break;
@@ -64,7 +95,7 @@ void displayMenu() {
         displayed = 1;
     }
     
-    pthread_create(&displayThread, NULL, display, NULL); // 建立子執行緒
+    pthread_create(&displayThread, NULL, displayScreen, NULL); // 建立子執行緒
 }
 
 void processCommand(int command) {
@@ -74,10 +105,20 @@ void processCommand(int command) {
             if(command == 3 || command ==4) PageStatus =  1;
             break;
         case 1:
-            if(command == 3) LR_Block = 0;
-            else if(command == 4) LR_Block =1;
-            else if(command == 1) PageStatus = 2;
-            else if(command == 2) PageStatus = 0;
+            if(command == 3) {
+                LR_Block = 0;
+                displayMenu();
+                sleep(1);
+                backToHome();
+                PageStatus = 2;
+            }
+            else if(command == 4) {
+                LR_Block = 1;
+                displayMenu();
+                sleep(1);
+                backToHome();
+                PageStatus = 2;
+            }
             break;
         case 2:
             if (command == 3)
@@ -93,18 +134,42 @@ void processCommand(int command) {
             else if (command == 1)
                 PageStatus = 3;
             else if (command == 2)
+            {
+                backToHome();
                 PageStatus = 1;
+            }
             break;
         case 3:
-            if (command == 3)       LR_Payment = 0;
-            else if (command == 4)  LR_Payment = 1;
-            else if (command == 1)  PageStatus = 4;
+            if (command == 3)       {
+                LR_Payment = 0;
+                displayMenu();
+                sleep(1);
+                PageStatus = 4;
+                displayMenu();
+                sleep(5);
+                PageStatus = 5;
+                displayMenu();
+                sleep(10);
+                backToHome();
+                PageStatus = 1;
+            }
+            else if (command == 4)  {
+                LR_Payment = 1;
+                displayMenu();
+                sleep(1);
+                PageStatus = 4;
+                displayMenu();
+                sleep(5);
+                PageStatus = 5;
+                displayMenu();
+                sleep(10);
+                backToHome();
+                PageStatus = 1;
+            }
             else if (command == 2)  PageStatus = 2;
-            break;
-        case 4:
-            if(command == 1 || command == 2)    PageStatus = 0;
             break;
         default:
             break;
     }
+    displayMenu();
 }

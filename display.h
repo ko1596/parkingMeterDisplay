@@ -24,9 +24,12 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <pthread.h>
+// #include <gst/gst.h>
 
 #define WORK_SPACE_DIR "python3 /home/root/UI_ENG_for_python/frame.py "
 #define COMMAND_PATH "/home/root/UI_ENG_for_python/"
+#define LEFT_SPACE_NO " 001"
+#define RIGHT_SPACE_NO " 002"
 
 /** @defgroup PrintScreen_PageStatus_group Defines Page Status
  *  Defines all possible Pages
@@ -48,6 +51,9 @@ typedef uint8_t PrintScreen_PageStatus;
 
 /*!< Page display payment>*/
 #define PRINTSCREEN_PAGE_DISPLAY_PAYMENT            ((PrintScreen_PageStatus)  4)
+
+/*!< Page display payment successful>*/
+#define PRINTSCREEN_PAGE_DISPLAY_SUCCESSFUL         ((PrintScreen_PageStatus)  5)
 /** @} PrintScreen_PageStatus_group */
 
 PrintScreen_PageStatus PageStatus;
@@ -77,6 +83,9 @@ int LR_Select_Time;
  ************************************************/
 int LR_Payment;
 
+char parking_space_left[5];
+char parking_space_right[5];
+
 /**
  * @brief display thread
  * 
@@ -95,7 +104,7 @@ void initData(void);
  * @brief Create a fork to display the page of the status
  * 
  */
-void *display(void *);
+void *displayScreen(void *);
 
 /**
  * @brief Generate the page of the status "frame.png"
@@ -109,8 +118,6 @@ void displayMenu(void);
  * @param command           the switch command
  */
 void processCommand(int);
-
-void 
 
 #endif /*DISPLAY_H*/
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/

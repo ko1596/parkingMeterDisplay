@@ -1,18 +1,24 @@
 #include "display.h"
 
-void main()
+int main ()
 {
-    int input;
+    // GstElement *pipeline, *source, *sink;
+    // GstBus *bus;
+    // GstMessage *msg;
+    // GstStateChangeReturn ret;
+
+    // /* Initialize GStreamer */
+    // gst_init (&argc, &argv);
+    
     initData();
+    displayMenu();
     while (1){
-        
-        sleep(5);
-        processCommand(3);
-        displayMenu();
-        
-        sleep(5);
-        processCommand(4);
-        displayMenu();
+        int buf;
+
+        printf("enter command: ");
+        scanf("%d", &buf);
+        processCommand(buf);
         
     }
+    return 0;
 }
