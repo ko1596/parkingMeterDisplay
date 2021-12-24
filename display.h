@@ -24,7 +24,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <pthread.h>
-// #include <gst/gst.h>
+#include <gst/gst.h>
 
 #define WORK_SPACE_DIR "python3 /home/root/UI_ENG_for_python/frame.py "
 #define COMMAND_PATH "/home/root/UI_ENG_for_python/"
@@ -94,17 +94,22 @@ pthread_t displayThread; // 宣告 pthread 變數
 
 int displayed;
 
+GstElement *pipeline, *jpdec, *imgf, *source, *sink;
+GstBus *bus;
+GstMessage *msg;
+GstStateChangeReturn ret;
+
 /**
  * @brief Initial all data
  * 
  */
-void initData(void);
+int initData(void);
 
 /**
  * @brief Create a fork to display the page of the status
  * 
  */
-void *displayScreen(void *);
+void displayScreen(void);
 
 /**
  * @brief Generate the page of the status "frame.png"
