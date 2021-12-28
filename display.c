@@ -153,7 +153,7 @@ void displayMenu()
     }
     printf("%s\n", buf);
     system(buf);
-    usleep(500);
+    usleep(50);
     displayScreen();
 }
 
