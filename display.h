@@ -28,9 +28,10 @@
 
 #define WORK_SPACE_DIR "python3 /home/root/UI_ENG_for_python/frame.py "
 #define COMMAND_PATH "/home/root/UI_ENG_for_python/"
+#define IMG_PATH "/home/root/UI_ENG_for_python/frame.jpg"
 #define LEFT_SPACE_NO " 001"
 #define RIGHT_SPACE_NO " 002"
-#define BUTTON_HOVER_TIME 500000
+#define BUTTON_HOVER_TIME 250000
 
 /** @defgroup PrintScreen_PageStatus_group Defines Page Status
  *  Defines all possible Pages
@@ -87,24 +88,23 @@ int LR_Payment;
 char parking_space_left[5];
 char parking_space_right[5];
 
-/**
- * @brief display thread
- * 
- */
-pthread_t displayThread; // 宣告 pthread 變數
-
 int displayed;
 
-GstElement *pipeline, *jpdec, *imgf, *source, *sink;
+GstElement *pipeline, *jpdec, *imgf, *source, *sink, *filter;
 GstBus *bus;
 GstMessage *msg;
 GstStateChangeReturn ret;
+GstCaps *filtercaps;
 
 /**
  * @brief Initial all data
  * 
  */
 int initData(void);
+
+int initArg(void);
+
+int initGST(void);
 
 /**
  * @brief Create a fork to display the page of the status

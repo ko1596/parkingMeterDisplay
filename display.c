@@ -2,6 +2,12 @@
 
 int initData(void)
 {
+    if (initArg() || initGST())
+        return -1;
+    return 0;
+}
+
+int initArg(){
     PageStatus = PRINTSCREEN_PAGE_HOMEPAGE;
     hours = 1;
     LR_Block = 2;       // 0 left      1 right      2 non-select
@@ -10,12 +16,19 @@ int initData(void)
     displayed = 0;      // 0 close 1 open
     sprintf(parking_space_left, "%s", LEFT_SPACE_NO);
     sprintf(parking_space_right, "%s", RIGHT_SPACE_NO);
+    return 0;
+}
+
+int initGST(void){
     gst_init(NULL, NULL);
 
     source = gst_element_factory_make ("filesrc", "source");
-    sink = gst_element_factory_make ("autovideosink", "sink");
+    sink = gst_element_factory_make ("waylandsink", "sink");
     jpdec = gst_element_factory_make ("jpegdec", "jdec");
     imgf = gst_element_factory_make ("imagefreeze", "freeze");
+    filter = gst_element_factory_make ("capsfilter", "filter");
+    g_assert (filter != NULL); /* should always exist */
+
 
     pipeline = gst_pipeline_new("test-pipeline");
     if (!pipeline || !source || !sink || !jpdec || !imgf) {
@@ -24,22 +37,29 @@ int initData(void)
     }
 
     /* Build the pipeline */
-    gst_bin_add_many (GST_BIN (pipeline), source, jpdec, imgf, sink, NULL);
-    if (gst_element_link_many (source, jpdec, imgf, sink, NULL) != TRUE) {
+    gst_bin_add_many (GST_BIN (pipeline), source, jpdec, imgf, filter, sink, NULL);
+    if (gst_element_link_many (source, jpdec, imgf, filter, sink, NULL) != TRUE) {
         g_printerr ("Elements could not be linked.\n");
         gst_object_unref (pipeline);
         return -1;
     }
 
+    filtercaps = gst_caps_new_simple ("video/x-raw",
+               "framerate", GST_TYPE_FRACTION, 5, 1,
+               NULL);
+
+    g_object_set (G_OBJECT (filter), "caps", filtercaps, NULL);
+    gst_caps_unref (filtercaps);
+
     /* Modify the source's properties */
-    g_object_set (source, "location", "frame.jpg", NULL);
+    g_object_set (source, "location", IMG_PATH, NULL);
     return 0;
 }
 
 void backToHome()
 {
     hours = 1;
-    printf("A LR_Block: %d\n", LR_Block);
+    printf("Reset Dat.\n LR_Block: %d\n", LR_Block);
     if (PageStatus != 1)
         LR_Block = 2;   // 0 left      1 right      2 non-select
     LR_Select_Time = 2; // 0 left      1 right      2 non-select
@@ -48,10 +68,9 @@ void backToHome()
 
 void displayScreen()
 {
-    
-
     /* Start playing */
     ret = gst_element_set_state (pipeline, GST_STATE_READY);
+    usleep(500);
     ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
     if (ret == GST_STATE_CHANGE_FAILURE) {
         g_printerr ("Unable to set the pipeline to the playing state.\n");
@@ -134,12 +153,7 @@ void displayMenu()
     }
     printf("%s\n", buf);
     system(buf);
-    if (displayed)
-    {
-        pthread_cancel(displayThread);
-        pthread_join(displayThread, NULL);
-        displayed = 1;
-    }
+    usleep(500);
     displayScreen();
 }
 
@@ -156,7 +170,7 @@ void processCommand(int command)
         {
             LR_Block = 0;
             displayMenu();
-            usleep(BUTTON_HOVER_TIME);
+            // usleep(BUTTON_HOVER_TIME);
             backToHome();
             PageStatus = 2;
         }
@@ -164,7 +178,7 @@ void processCommand(int command)
         {
             LR_Block = 1;
             displayMenu();
-            usleep(BUTTON_HOVER_TIME);
+            // usleep(BUTTON_HOVER_TIME);
             backToHome();
             PageStatus = 2;
         }
@@ -194,7 +208,7 @@ void processCommand(int command)
         {
             LR_Payment = 0;
             displayMenu();
-            usleep(BUTTON_HOVER_TIME);
+            // usleep(BUTTON_HOVER_TIME);
             PageStatus = 4;
             displayMenu();
             sleep(5);
@@ -208,7 +222,7 @@ void processCommand(int command)
         {
             LR_Payment = 1;
             displayMenu();
-            usleep(BUTTON_HOVER_TIME);
+            // usleep(BUTTON_HOVER_TIME);
             PageStatus = 4;
             displayMenu();
             sleep(5);
