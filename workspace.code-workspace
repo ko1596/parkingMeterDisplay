@@ -11,7 +11,8 @@
 		"files.associations": {
 			"display.h": "c",
 			"stdio.h": "c",
-			"waitflags.h": "c"
+			"waitflags.h": "c",
+			"display_for_hk.h": "c"
 		}
 	}
 }
